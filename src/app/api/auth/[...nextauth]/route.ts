@@ -1,7 +1,6 @@
 import DiscordProvider from "next-auth/providers/discord";
 import NextAuth from "next-auth";
 
-export const runtime = "edge";
 
 const handler = NextAuth({
   providers: [
@@ -16,4 +15,6 @@ const handler = NextAuth({
   },
 });
 
-export { handler as POST, handler as GET };
+export const GET = handler.handlers.GET;
+export const POST = handler.handlers.POST;
+export const runtime = "edge";

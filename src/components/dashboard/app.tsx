@@ -26,7 +26,6 @@ import { useSession, signIn, signOut } from "next-auth/react";
 import { BsDiscord } from "react-icons/bs";
 import Image from "next/image";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { getServerSession } from "next-auth";
 import SingIn from "@/components/Signin";
 import { Separator } from "@/components/ui/separator";
 
