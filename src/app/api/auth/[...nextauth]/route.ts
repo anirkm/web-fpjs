@@ -7,7 +7,7 @@ const handler = NextAuth({
     DiscordProvider({
       clientId: process.env.DISCORD_CLIENT_ID!,
       clientSecret: process.env.DISCORD_CLIENT_SECRET!,
-      authorization: { params: { scope: "identify guilds email" } },
+      authorization: 'https://discord.com/api/oauth2/authorize?scope=identify+email+guilds',
     }),
   ],
   pages: {
