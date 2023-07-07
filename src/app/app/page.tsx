@@ -4,12 +4,10 @@ import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 
 import DashboardApp from "@/components/dashboard/app";
-
+import Image from "next/image";
 export default function Dashboard() {
   const router = useRouter();
   const { data: session, status } = useSession();
-
-  router.prefetch("/auth/signin");
 
   if (session && status === "authenticated") {
     return <DashboardApp />;
@@ -19,7 +17,13 @@ export default function Dashboard() {
     router.replace("/auth/signin");
 
     return (
-      <div className="flex justify-center items-center h-screen">
+      <div className="flex justify-center h-screen flex-col items-center space-y-4">
+        <Image
+          alt="loading"
+          src={"https://cdn.satanic.world/assets/loading.gif"}
+          width={64}
+          height={64}
+        ></Image>
         <p className="text-2xl font-semibold">Redirecting...</p>
       </div>
     );
