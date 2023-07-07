@@ -17,12 +17,12 @@ export default function Dashboard() {
     router.replace("/auth/signin");
 
     return (
-      <div className="flex justify-center h-screen flex-col items-center space-y-4">
+      <div className="flex justify-center h-screen flex-col items-center space-y-2">
         <Image
           alt="loading"
           src={"https://cdn.satanic.world/assets/loading.gif"}
-          width={64}
-          height={64}
+          width={128}
+          height={128}
         ></Image>
         <p className="text-2xl font-semibold">Redirecting...</p>
       </div>
