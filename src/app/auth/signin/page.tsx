@@ -14,7 +14,7 @@ export default function Page() {
   }
 
   if (session && status === "authenticated") {
-    router.push("/app");
+    router.replace("/app");
     return (
       <div className="flex justify-center items-center h-screen">
         <p className="text-2xl font-semibold">Redirecting...</p>
