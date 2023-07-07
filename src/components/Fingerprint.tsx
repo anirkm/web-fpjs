@@ -31,8 +31,8 @@ export default function Fingerprint() {
     mutate,
     isValidating,
   } = useSWR(
-    visitorData ? "/api/requestid" : null,
-    (url) => fetcher(url, { id: visitorData?.requestId }),
+    visitorData ? "/api/verify" : null,
+    (url: string) => fetcher(url, { id: visitorData?.requestId }),
     { refreshInterval: 3000 }
   );
 
@@ -51,7 +51,7 @@ export default function Fingerprint() {
         variant="default"
         disabled={isLoading}
         onClick={async () => {
-          await getData({ ignoreCache: false });
+          await getData({ ignoreCache: true });
         }}
       >
         Reload data
@@ -65,7 +65,7 @@ export default function Fingerprint() {
         Request ID:{" "}
         {isLoadingFp
           ? "Loading..."
-          : dataFp?.products.identification.data.requestId}
+          : dataFp?.products?.identification?.data?.requestId}
       </p>
       <p>Full Request data:</p>
       <pre>{errorFp ? errorFp.message : JSON.stringify(dataFp, null, 2)}</pre>

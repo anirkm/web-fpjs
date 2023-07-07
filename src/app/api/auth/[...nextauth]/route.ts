@@ -1,20 +1,20 @@
 import DiscordProvider from "next-auth/providers/discord";
 import NextAuth from "next-auth";
 
-
-const handler = NextAuth({
+const options = {
+  secret: process.env.NEXTAUTH_SECRET!,
   providers: [
     DiscordProvider({
       clientId: process.env.DISCORD_CLIENT_ID!,
       clientSecret: process.env.DISCORD_CLIENT_SECRET!,
-      authorization: 'https://discord.com/api/oauth2/authorize?scope=identify+email+guilds',
+      authorization: { params: { scope: "identify email guilds" } },
     }),
   ],
   pages: {
-    signIn: "/",
+    signIn: "/auth/signin",
   },
-});
+};
 
-export const GET = handler.handlers.GET;
-export const POST = handler.handlers.POST;
-export const runtime = "edge";
+const handler = NextAuth(options);
+
+export { handler as GET, handler as POST };

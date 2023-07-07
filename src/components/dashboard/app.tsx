@@ -23,17 +23,20 @@ import { Button } from "@/components/ui/button";
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useSession, signIn, signOut } from "next-auth/react";
-import { BsDiscord } from "react-icons/bs";
-import Image from "next/image";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import SingIn from "@/components/Signin";
-import { Separator } from "@/components/ui/separator";
+
+import VerifyTab from "./verify";
+import AppealTab from "./appeal";
+import { Toaster } from "../ui/toaster";
+import { FpjsProvider } from "@fingerprintjs/fingerprintjs-pro-react";
 
 export default function DashboardApp() {
   const { data: session, status } = useSession();
 
+  console.log(session, status)
+
   return (
-    <div className="flex justify-center flex-col m-auto h-[75vh] sm:w-[75vh] space-y-3">
+    <div className="flex justify-center flex-col sm:m-auto sm:mt-[50px] mt-8 mx-3 sm:w-[75vh] space-y-3">
       <Alert className="transition-transform hover:scale-[1.02] w-full">
         <AlertDescription>
           <div className="flex justify-between">
@@ -52,7 +55,7 @@ export default function DashboardApp() {
                 }`}</p>
               </div>
             </div>
-            <div className="">
+            <div className="flex items-center">
               <AlertDialog>
                 <AlertDialogTrigger asChild>
                   <Button variant={"destructive"}>Sign Out</Button>
@@ -84,36 +87,20 @@ export default function DashboardApp() {
           <TabsTrigger value="profile">Profile</TabsTrigger>
         </TabsList>
         <TabsContent value="verify">
-          <Card>
-            <CardHeader>
-              <CardTitle>Verify</CardTitle>
-              <CardDescription>
-                Make changes to your account here.
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-2">
-              <p>hamid</p>
-            </CardContent>
-            <CardFooter>
-              <Button>Save changes</Button>
-            </CardFooter>
-          </Card>
+          <FpjsProvider
+            loadOptions={{
+              apiKey: "qG86ITS1SNYy2UG8NtL1",
+              endpoint:
+                "https://satanic.world/9UdfU9zDc1LEBpMF/2GhHG2qv16YjSSsm",
+              scriptUrlPattern:
+                "https://satanic.world/9UdfU9zDc1LEBpMF/2cF9r13mPV0vbeIk?apiKey=<apiKey>&version=<version>&loaderVersion=<loaderVersion>",
+            }}
+          >
+            <VerifyTab />
+          </FpjsProvider>
         </TabsContent>
         <TabsContent value="appeal">
-          <Card>
-            <CardHeader>
-              <CardTitle>Appeal</CardTitle>
-              <CardDescription>
-                Make changes to your account here.
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-2">
-              <p>hamid</p>
-            </CardContent>
-            <CardFooter>
-              <Button variant={"destructive"}>Save changes</Button>
-            </CardFooter>
-          </Card>
+          <AppealTab />
         </TabsContent>
         <TabsContent value="profile">
           <Card>
@@ -136,6 +123,7 @@ export default function DashboardApp() {
       <p className="text-center text-slate-300 text-xs">
         stop playing with em rioooot (like graah)
       </p>
+      <Toaster />
     </div>
   );
 }

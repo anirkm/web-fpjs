@@ -1,12 +1,12 @@
 "use client";
 
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
 
-import { useSession} from "next-auth/react";
 import SingIn from "@/components/Signin";
-import DashboardApp from "@/components/dashboard/app";
-
 
 export default function Page() {
+  const router = useRouter();
   const { data: session, status } = useSession();
 
   if (status === "unauthenticated") {
@@ -14,6 +14,11 @@ export default function Page() {
   }
 
   if (session && status === "authenticated") {
-    return <DashboardApp />;
+    router.push("/app");
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <p className="text-2xl font-semibold">Redirecting...</p>
+      </div>
+    );
   }
 }

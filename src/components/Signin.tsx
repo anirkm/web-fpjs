@@ -35,7 +35,7 @@ export default function SingIn() {
     <div className="flex justify-center flex-col m-auto h-[75vh] sm:w-[50vh] space-y-3">
       <Card className="flex flex-col justify-center items-center">
         <CardHeader className="flex flex-col justify-center items-center space-y-2">
-          <Image src="/11pm_logo.gif" alt="logo" width={60} height={60} />
+          <Image src="https://cdn.satanic.world/assets/11pm_logo.png" alt="logo" width={60} height={60} />
           <p className="text-2xl font-bold">Login to your account</p>
           <p className="text-center text-slate-400">
             Click on the button below
