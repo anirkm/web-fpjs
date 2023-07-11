@@ -7,7 +7,7 @@ import { captureException } from "@sentry/nextjs";
 export async function GET(req: NextRequest) {
   const session = await getServerSession();
 
-  if (!session) {
+  if (!session || !session.user) {
     return NextResponse.json({ error: "invalid session" }, { status: 401 });
   }
 
@@ -20,13 +20,18 @@ export async function GET(req: NextRequest) {
       return null;
     });
 
+  if (!member) {
+    return NextResponse.json(
+      {
+        error: "invalid member",
+      },
+      { status: 404 }
+    );
+  }
+
   return NextResponse.json(
     {
-      user: {
-        ...session.user,
-        isMember: !!member,
-        isVerified: member?.roles.includes("1037823799502045204"),
-      },
+      member: { ...member, image: session.user.image },
     },
     { status: 200 }
   );

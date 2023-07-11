@@ -5,6 +5,8 @@ import { useRouter } from "next/navigation";
 
 import DashboardApp from "@/components/dashboard/app";
 import Image from "next/image";
+import { Metadata } from "next/types";
+
 export default function Dashboard() {
   const router = useRouter();
   const { data: session, status } = useSession();

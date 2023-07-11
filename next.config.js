@@ -3,24 +3,20 @@ const nextConfig = {
   images: {
     remotePatterns: [
       {
-        protocol: 'https',
-        hostname: 'cdn.satanic.world',
-        port: '',
-        pathname: '/assets/**',
+        protocol: "https",
+        hostname: "cdn.satanic.world",
+        port: "",
+        pathname: "/assets/**",
       },
     ],
   },
-}
+};
 
-module.exports = nextConfig
-
+module.exports = nextConfig;
 
 // Injected content via Sentry wizard below
 
 const { withSentryConfig } = require("@sentry/nextjs");
-
-
-
 
 module.exports = withSentryConfig(
   module.exports,

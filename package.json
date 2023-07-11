@@ -11,6 +11,7 @@
   "dependencies": {
     "@auth/mongodb-adapter": "^1.0.0",
     "@auth/upstash-redis-adapter": "^1.0.0",
+    "@discordjs/core": "^0.6.0",
     "@fingerprintjs/fingerprintjs-pro-react": "^2.5.0",
     "@hookform/resolvers": "^3.1.1",
     "@next-auth/upstash-redis-adapter": "^3.0.4",

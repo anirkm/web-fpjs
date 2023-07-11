@@ -11,22 +11,27 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ error: "invalid session" }, { status: 401 });
   }
 
-  const member = await discordApi.guilds
-    .getMember("777271906486976512", "490667823392096268")
+  const isBanned = await discordApi.guilds
+    .getMemberBans("777271906486976512")
+    .then((bans) => {
+      const isBanned = bans.find((ban) => ban.user.id === "490667823392096268");
+      return !!isBanned;
+    })
     .catch((e) => {
-      if (e.message !== "Unknown User") {
-        captureException(e);
-      }
-      return null;
+      captureException(e);
+      return undefined;
     });
+
+  if (isBanned === undefined) {
+    return NextResponse.json(
+      { error: "an unexpected error occured" },
+      { status: 500 }
+    );
+  }
 
   return NextResponse.json(
     {
-      user: {
-        ...session.user,
-        isMember: !!member,
-        isVerified: member?.roles.includes("1037823799502045204"),
-      },
+      isBanned,
     },
     { status: 200 }
   );

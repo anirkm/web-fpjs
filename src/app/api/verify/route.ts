@@ -1,7 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
+import discordApi from "@/lib/discord";
 
 import * as z from "zod";
+import { captureException } from "@sentry/nextjs";
 
 export async function POST(req: NextRequest) {
   const session = await getServerSession();
@@ -42,14 +44,44 @@ export async function POST(req: NextRequest) {
     );
   }
 
-  const fingerprintData = await fingerprint.json();
+  const fingerprintData = await fingerprint.json().catch(() => null);
+
+  if (!fingerprintData)
+    return NextResponse.json(
+      { error: "an unexpected error occured" },
+      { status: 500 }
+    );
+
+  console.log(
+    JSON.stringify(fingerprintData),
+    req.headers.get("cf-connecting-ip") ?? "unknown",
+    req.headers.get("user-agent") ?? "unknown",
+    fingerprintData.products.identification.data.browserDetails.userAgent ==
+      req.headers.get("user-agent")
+  );
+
+  const uuid = crypto.randomUUID();
+
+  const isRoleAdded = await discordApi.guilds
+    .addRoleToMember(
+      "777271906486976512",
+      "490667823392096261",
+      "1037823799502045204",
+      { reason: `online verification - ${uuid}` }
+    )
+    .then(() => true)
+    .catch((e) => {
+      captureException(e);
+      return true;
+    });
+
   return NextResponse.json(
     {
-      _v: Math.floor(Math.random() * 100) + 1 > 50 ? "success" : "flagged",
+      _v: isRoleAdded ? "success" : "error",
+      uuid,
     },
     {
       status: 200,
     }
   );
 }
-

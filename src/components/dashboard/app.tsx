@@ -27,13 +27,18 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 
 import VerifyTab from "./verify";
 import AppealTab from "./appeal";
+import ProfileTab from "./profile";
 import { Toaster } from "../ui/toaster";
 import { FpjsProvider } from "@fingerprintjs/fingerprintjs-pro-react";
+import { Metadata } from "next/types";
 
+export const metadata: Metadata = {
+  title: "11PM Community - Dashboard",
+};
 export default function DashboardApp() {
   const { data: session, status } = useSession();
 
-  console.log(session, status)
+  console.log(session, status);
 
   return (
     <div className="flex justify-center flex-col sm:m-auto sm:mt-[50px] mt-8 mx-3 sm:w-[75vh] space-y-3">
@@ -103,21 +108,7 @@ export default function DashboardApp() {
           <AppealTab />
         </TabsContent>
         <TabsContent value="profile">
-          <Card>
-            <CardHeader>
-              <CardTitle>Profile</CardTitle>
-              <CardDescription>
-                Make changes to your account here.
-              </CardDescription>
-            </CardHeader>
-            <CardContent className="space-y-2">
-              <p>hamid</p>
-            </CardContent>
-            <CardFooter className="flex space-x-2">
-              <Button variant={"destructive"}>Save changes</Button>
-              <Button variant={"destructive"}>Save changes</Button>
-            </CardFooter>
-          </Card>
+          <ProfileTab />
         </TabsContent>
       </Tabs>
       <p className="text-center text-slate-300 text-xs">
