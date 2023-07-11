@@ -62,13 +62,12 @@ export async function POST(req: NextRequest) {
 
   const uuid = crypto.randomUUID();
 
+  const userId = session.user?.image?.split("/")[4];
+
   const isRoleAdded = await discordApi.guilds
-    .addRoleToMember(
-      "777271906486976512",
-      "490667823392096261",
-      "1037823799502045204",
-      { reason: `online verification - ${uuid}` }
-    )
+    .addRoleToMember("777271906486976512", userId!, "1037823799502045204", {
+      reason: `online verification - ${uuid}`,
+    })
     .then(() => true)
     .catch((e) => {
       captureException(e);

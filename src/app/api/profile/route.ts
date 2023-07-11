@@ -11,8 +11,10 @@ export async function GET(req: NextRequest) {
     return NextResponse.json({ error: "invalid session" }, { status: 401 });
   }
 
+  const userId = session.user?.image?.split("/")[4];
+
   const member = await discordApi.guilds
-    .getMember("777271906486976512", "490667823392096268")
+    .getMember("777271906486976512", userId!)
     .catch((e) => {
       if (e.message !== "Unknown User") {
         captureException(e);
