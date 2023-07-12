@@ -17,7 +17,7 @@ export async function GET(req: NextRequest) {
       const isBanned = bans.find((ban) => ban.user.id === session.user.id);
       return !!isBanned;
     })
-    .catch((e) => {
+    .catch((e: Error) => {
       captureException(e);
       return undefined;
     });
