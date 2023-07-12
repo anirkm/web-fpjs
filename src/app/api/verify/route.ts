@@ -4,9 +4,10 @@ import discordApi from "@/lib/discord";
 
 import * as z from "zod";
 import { captureException } from "@sentry/nextjs";
+import { authOptions } from "../auth/[...nextauth]/route";
 
 export async function POST(req: NextRequest) {
-  const session = await getServerSession();
+  const session = await getServerSession(authOptions);
 
   if (!session) {
     return NextResponse.json({ error: "invalid session" }, { status: 401 });
@@ -62,14 +63,13 @@ export async function POST(req: NextRequest) {
 
   const uuid = crypto.randomUUID();
 
-  const userId = session.user?.image?.split("/")[4];
 
   const isRoleAdded = await discordApi.guilds
-    .addRoleToMember("777271906486976512", userId!, "1037823799502045204", {
+    .addRoleToMember("777271906486976512", session.user.id, "1037823799502045204", {
       reason: `online verification - ${uuid}`,
     })
     .then(() => true)
-    .catch((e) => {
+    .catch((e: Error) => {
       captureException(e);
       return true;
     });

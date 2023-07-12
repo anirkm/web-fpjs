@@ -1,21 +1,20 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import discordApi from "@/lib/discord";
+import { authOptions } from "../auth/[...nextauth]/route";
 
 import { captureException } from "@sentry/nextjs";
 
 export async function GET(req: NextRequest) {
-  const session = await getServerSession();
+  const session = await getServerSession(authOptions);
 
   if (!session || !session.user) {
     return NextResponse.json({ error: "invalid session" }, { status: 401 });
   }
 
-  const userId = session.user?.image?.split("/")[4];
-
   const member = await discordApi.guilds
-    .getMember("777271906486976512", userId!)
-    .catch((e) => {
+    .getMember("777271906486976512", session.user.id)
+    .catch((e: Error) => {
       if (e.message !== "Unknown User") {
         captureException(e);
       }
