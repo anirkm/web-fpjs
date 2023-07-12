@@ -1,3 +1,3 @@
-import { API } from "@discordjs/core";
+import type { API } from "@discordjs/core";
 
 export type DiscordApi = API;
