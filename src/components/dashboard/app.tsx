@@ -112,7 +112,7 @@ export default function DashboardApp() {
         </TabsContent>
       </Tabs>
       <p className="text-center text-slate-300 text-xs">
-        stop playing with em rioooot (like graah)
+        powered by codeine & promethazine 💜
       </p>
       <Toaster />
     </div>

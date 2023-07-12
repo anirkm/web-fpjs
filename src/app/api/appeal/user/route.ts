@@ -3,6 +3,9 @@ import { getServerSession } from "next-auth";
 import discordApi from "@/lib/discord";
 import { authOptions } from "@/app/api/auth/[...nextauth]/route";
 import { captureException } from "@sentry/nextjs";
+import db from "@/drizzle/db";
+import { appeals } from "@/drizzle/db/schema";
+import { eq, and } from "drizzle-orm";
 
 export async function GET(req: NextRequest) {
   const session = await getServerSession(authOptions);
@@ -29,9 +32,19 @@ export async function GET(req: NextRequest) {
     );
   }
 
+  const havePendingAppeal = await db
+    .select()
+    .from(appeals)
+    .where(
+      and(eq(appeals.userId, session.user.id), eq(appeals.status, "pending"))
+    )
+    .limit(1);
+
   return NextResponse.json(
     {
-      isBanned,
+      isBanned: true,
+      havePendingAppeal: havePendingAppeal.length > 0,
+      pendingAppeal: havePendingAppeal[0] ?? null,
     },
     { status: 200 }
   );

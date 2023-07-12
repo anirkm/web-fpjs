@@ -34,20 +34,27 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+
+import AppealDialog from "./appealDialog";
+
 import { useState } from "react";
 import { ReloadIcon } from "@radix-ui/react-icons";
 import { Skeleton } from "../ui/skeleton";
 import { Alert, AlertDescription } from "../ui/alert";
 const formSchema = z.object({
   message: z
-    .string()
+    .string({
+      required_error: "This field is required",
+    })
     .min(50, {
       message: "This field must contain at least 50 characters long",
     })
-    .max(250, {
-      message: "This field must contain at most 200 characters long",
+    .max(300, {
+      message: "This field must contain at most 300 characters long",
     }),
-  reason: z.string(),
+  reason: z.string({
+    required_error: "This field is required",
+  }),
 });
 
 import { fetcher } from "@/lib/utils";
@@ -76,14 +83,30 @@ export default function AppealTab() {
 
   async function onSubmit(values: z.infer<typeof formSchema>) {
     setIsSubmitting(true);
-    await new Promise((r) => setTimeout(r, 1000));
-    setSubmitError("Something went wrong, please try again later.");
-    toast({
-      title: "Appeal sent",
-      description: `Data: ${JSON.stringify(values)}`,
+
+    const appealRes = await fetch("/api/appeal/", {
+      method: "POST",
+      body: JSON.stringify(values),
     });
+
+    if (!appealRes.ok) {
+      if (appealRes.status == 409) {
+        setSubmitError("You already have an appeal in progress.");
+      } else {
+        setSubmitError("Something went wrong while submitting your appeal.");
+      }
+
+      setIsSubmitting(false);
+      return;
+    }
+
+    mutate({});
+    toast({
+      title: "Appeal submitted",
+      description: "Your appeal has been submitted successfully.",
+    });
+
     setIsSubmitting(false);
-    throw new Error("Something went wrong sentry tesst");
   }
 
   if (isLoading || (isValidating && isRefreshButtonLoading))
@@ -161,6 +184,50 @@ export default function AppealTab() {
       </Card>
     );
 
+  if (data.havePendingAppeal) {
+    return (
+      <Card>
+        <CardHeader>
+          <CardTitle className="text-lg font-bold">Appeal</CardTitle>
+          <CardDescription>
+            If you&apos;re banned from the server, you can appeal here.
+          </CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-2">
+          <Alert>
+            <AlertDescription>
+              <div className="flex flex-col space-y-2 items-center">
+                <Image
+                  src="https://cdn.satanic.world/assets/stopwatch.gif"
+                  alt="logo"
+                  width={96}
+                  height={96}
+                  className="mt-2 transition-transform hover:scale-[1.05]"
+                />
+                <p className="text-lg font-bold text-center">
+                  You already have submitted an appeal.
+                </p>
+                <div className="flex flex-col space-y-4 text-center items-center">
+                  <p className="text-muted-foreground mb-2">
+                    You have to wait for the staff to review your appeal.
+                  </p>
+                </div>
+              </div>
+              <div className="flex justify-center items-center my-2 sm:mx-0 mx-2">
+                <AppealDialog appeal={data.pendingAppeal} />
+              </div>
+            </AlertDescription>
+          </Alert>
+        </CardContent>
+        <CardFooter className="flex flex-col items-start space-y-2">
+          <p className="text-sm text-muted-foreground">
+              You can only submit one appeal at a time. if you&apos;ve submitted an appeal and want to submit another one, you have to wait for the staff to review your appeal.
+          </p>
+        </CardFooter>
+      </Card>
+    );
+  }
+
   if (!data.isBanned)
     return (
       <Card>
@@ -234,8 +301,9 @@ export default function AppealTab() {
                         Adversting another server.
                       </SelectItem>
                       <SelectItem value="blacklistedguild">
-                        You&apos;re a staff member on a blacklisted guild
+                        You&apos;re a staff member on a blacklisted guild.
                       </SelectItem>
+                      <SelectItem value="scam">Scamming.</SelectItem>
                       <SelectItem value="other">
                         Other (please specify)
                       </SelectItem>
@@ -255,7 +323,7 @@ export default function AppealTab() {
                   <FormControl>
                     <Textarea
                       placeholder="Tell us why we should unban you"
-                      className="resize-none h-24"
+                      className="resize-none h-32"
                       {...field}
                     />
                   </FormControl>

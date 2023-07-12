@@ -66,9 +66,11 @@ export default function VerifyTab() {
 
   const [verdict, setVerdict] = useState<{
     status: "pending" | "success" | "error" | "flagged";
+    id: string | null;
     errors: string[];
   }>({
     status: "pending",
+    id: null,
     errors: [],
   });
 
@@ -136,6 +138,7 @@ export default function VerifyTab() {
 
     setVerdict({
       status: verificationData._v,
+      id: verificationData._i,
       errors: [],
     });
 
@@ -314,7 +317,7 @@ export default function VerifyTab() {
                   </div>
                   <div className="text-center mt-1">
                     <p className="text-muted-foreground text-xs">
-                      fee8054354b30bb6
+                      {verdict.id}
                     </p>
                   </div>
                 </div>
@@ -436,7 +439,7 @@ export default function VerifyTab() {
           <Alert>
             <AlertDescription>
               <div className="flex flex-col space-y-2 items-center">
-                <ConfettiExplosion/>
+                <ConfettiExplosion />
                 <Image
                   src="https://cdn.satanic.world/assets/yay.gif"
                   alt="logo"
