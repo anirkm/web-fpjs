@@ -1,11 +1,11 @@
 import { NextRequest, NextResponse } from "next/server";
 import { getServerSession } from "next-auth";
 import discordApi from "@/lib/discord";
-
+import { authOptions } from "../auth/[...nextauth]/route";
 import { captureException } from "@sentry/nextjs";
 
 export async function GET(req: NextRequest) {
-  const session = await getServerSession();
+  const session = await getServerSession(authOptions);
 
   if (!session) {
     return NextResponse.json({ error: "invalid session" }, { status: 401 });
@@ -14,7 +14,7 @@ export async function GET(req: NextRequest) {
   const isBanned = await discordApi.guilds
     .getMemberBans("777271906486976512")
     .then((bans) => {
-      const isBanned = bans.find((ban) => ban.user.id === "490667823392096268");
+      const isBanned = bans.find((ban) => ban.user.id === session.user.id);
       return !!isBanned;
     })
     .catch((e) => {
